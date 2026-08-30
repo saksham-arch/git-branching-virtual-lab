@@ -16,9 +16,11 @@ Then visit <http://localhost:8000>.
 
 - Virtual Labs-inspired responsive layout and experiment navigation
 - Interactive branch and merge commit graph
+- Guided six-step Git command terminal with hints and validation
 - Conflict-resolution validation exercise
 - Pretest and scored quiz
 - Practical completion checklist
+- Learning objectives, prerequisites, full procedure, and further readings
 - Browser-local progress persistence
 - Accessible semantic controls and mobile navigation
 
