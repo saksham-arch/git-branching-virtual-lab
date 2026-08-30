@@ -1,3 +1,4 @@
+{% load static %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -8,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="experiment.css">
+  <link rel="stylesheet" href="{% static 'lab/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'lab/experiment.css' %}">
 </head>
 <body>
   <header class="topbar">
@@ -34,6 +35,7 @@
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <dialog id="modal"><button class="close" aria-label="Close">×</button><div id="modalContent"></div></dialog>
   <footer><p>© 2026 Virtual Labs — Git Version Control Experiment</p><p>Designed for self-paced learning and classroom practice.</p></footer>
-  <script src="app.js"></script>
+  <script>window.GIT_LAB_API = "{% url 'lab:experiment-api' %}";</script>
+  <script src="{% static 'lab/app.js' %}"></script>
 </body>
 </html>

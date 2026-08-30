@@ -1,13 +1,16 @@
 # Git Branching, Merging and Conflict Resolution — Virtual Lab
 
-A client-heavy, responsive learning experiment inspired by the Virtual Labs interface. It teaches Git branching, merging, and conflict resolution through structured concept pages, interactive commit graphs, a conflict editor, assessments, and locally saved progress.
+A Django-powered, client-heavy responsive learning experiment inspired by the Virtual Labs interface. Django serves the experiment and JSON metadata API, while browser-side JavaScript powers commit graphs, a conflict editor, assessments, and locally saved progress.
 
 ## Run locally
 
-No build step or server-side runtime is required. Open `index.html`, or run:
+Create the environment and run Django:
 
 ```bash
-python3 -m http.server 8000
+python3.13 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python manage.py migrate
+.venv/bin/python manage.py runserver
 ```
 
 Then visit <http://localhost:8000>.
@@ -26,4 +29,12 @@ Then visit <http://localhost:8000>.
 
 ## Technology
 
-HTML, CSS, and vanilla JavaScript. All experiment interactions run in the browser.
+Django, HTML, CSS, and vanilla JavaScript. Django owns routing, template/static delivery, health checks, and experiment metadata; simulations stay responsive by running in the browser.
+
+## Django routes
+
+- `/` — rendered experiment
+- `/api/experiment/` — experiment metadata JSON
+- `/health/` — framework health check
+
+Run verification with `.venv/bin/python manage.py check` and `.venv/bin/python manage.py test`.
