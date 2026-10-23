@@ -1,0 +1,4 @@
+title,value,notes
+feature/navbar,75,Resolved navigation conflict and verified merge
+feature/profile,100,Completed branch and merge quiz
+release/practice,50,Review three-way merge before retrying
