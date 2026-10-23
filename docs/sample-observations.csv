@@ -1,0 +1,4 @@
+title,value,notes
+Baseline,12.5,First run
+Cached response,4.25,Second run
+Cold start,25.75,Third run
