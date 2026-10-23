@@ -69,3 +69,5 @@ if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
     SECURE_HSTS_SECONDS = 3600
+# Course authentication screens take precedence over admin's fallback templates.
+TEMPLATES[0]['DIRS'] = [BASE_DIR / 'course' / 'templates', BASE_DIR]
