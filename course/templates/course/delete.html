@@ -1,1 +1,1 @@
-{% extends 'course/base.html' %}{% block content %}<h1>Delete practice record</h1><p>Delete “{{ row.title }}” and its score?</p><form method="post">{% csrf_token %}<button>Delete practice record</button> <a href="{% url 'course:practice records' %}">Cancel</a></form>{% endblock %}
+{% extends 'course/base.html' %}{% block content %}<h1>Delete practice record</h1><p>Delete “{{ row.title }}” and its score?</p><form method="post">{% csrf_token %}<button>Delete practice record</button> <a href="{% url 'course:observations' %}">Cancel</a></form>{% endblock %}
