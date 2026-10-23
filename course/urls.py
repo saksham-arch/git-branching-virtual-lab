@@ -3,6 +3,7 @@ from django.views.generic import TemplateView
 from . import views
 app_name = 'course'
 urlpatterns = [
+    path('attempts/save/', views.save_attempt, name='save-attempt'),
     path('react/', TemplateView.as_view(template_name='course/react.html'), name='react'),
     path('', views.index, name='index'),
     path('experiments/<slug:slug>/', views.experiment, name='experiment'),

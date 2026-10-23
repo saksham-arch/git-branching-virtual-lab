@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.shortcuts import render
 
 SECTIONS = [
@@ -8,6 +9,7 @@ SECTIONS = [
     "Quiz", "Exercise", "Further Readings",
 ]
 
+@ensure_csrf_cookie
 def experiment(request):
     return render(request, "index.html", {"experiment_title": "Git Branching, Merging and Conflict Resolution"})
 

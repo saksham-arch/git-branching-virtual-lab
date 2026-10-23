@@ -2,9 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .models import Observation, User
 
-admin.site.site_header = 'Django Laboratory Administration'
+admin.site.site_header = 'Git Laboratory Administration'
 admin.site.site_title = 'Laboratory admin'
-admin.site.index_title = 'Users and observations'
+admin.site.index_title = 'Learners and Git practice records'
 
 @admin.register(User)
 class LabUserAdmin(UserAdmin):

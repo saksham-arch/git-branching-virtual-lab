@@ -4,7 +4,6 @@ from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, Client, override_settings
 from django.urls import reverse
-from .catalog import EXPERIMENTS
 from .models import User, Observation
 
 class CourseTests(TestCase):
@@ -12,22 +11,24 @@ class CourseTests(TestCase):
         self.user = User.objects.create_user('student', 'student@example.com', 'StrongPassword!789')
         self.other = User.objects.create_user('other', password='StrongPassword!789')
 
-    def test_all_units_and_assessments_render(self):
-        self.assertEqual(len(EXPERIMENTS), 13)
-        self.assertEqual(self.client.get('/course/').status_code, 200)
-        for item in EXPERIMENTS:
-            url = reverse('course:experiment', args=[item['slug']])
-            response = self.client.get(url)
-            self.assertContains(response, item['title'])
-            response = self.client.post(url, {f'q{i}': str(q['answer']) for i, q in enumerate(item['questions'])})
-            self.assertContains(response, 'Score: 2 / 2')
-        self.assertEqual(self.client.get('/course/experiments/missing/').status_code, 404)
+    def test_original_experiment_and_legacy_course_redirect(self):
+        self.assertRedirects(self.client.get('/course/'), '/')
+        response = self.client.get('/')
+        self.assertContains(response, 'Git Branching, Merging and Conflict Resolution')
+        self.assertNotContains(response, 'SVU')
+        self.assertNotContains(response, 'List of experiments')
 
-    def test_templates_escape_and_verbatim(self):
-        response = self.client.get('/course/templates/', {'name': '<script>alert(1)</script>'})
-        self.assertContains(response, '&lt;script&gt;')
-        self.assertContains(response, '{{ client_value }}')
-        self.assertNotContains(response, '<script>alert(1)</script>')
+    def test_git_prediction_and_verbatim(self):
+        response = self.client.get('/course/react/')
+        self.assertContains(response, 'Predict the merge')
+        self.assertContains(response, '{{ branch_name }}')
+
+    def test_save_git_quiz_attempt(self):
+        self.client.force_login(self.user)
+        response = self.client.post('/course/attempts/save/', {'title':'Git quiz — main', 'value':75, 'notes':'3/4'})
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(Observation.objects.get().owner, self.user)
+        self.assertEqual(self.client.post('/course/attempts/save/', {'title':'Git quiz', 'value':101}).status_code, 400)
 
     def test_crud_validation_and_ownership(self):
         self.client.force_login(self.user)
@@ -58,7 +59,7 @@ class CourseTests(TestCase):
         response = upload('title,value,notes\nLatency,4,one\nThroughput,8,two\n')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(Observation.objects.count(), 2)
-        self.assertContains(self.client.get('/course/observations/'), 'Measurement graph')
+        self.assertContains(self.client.get('/course/observations/'), 'Quiz score history')
         self.assertContains(self.client.get('/course/csv/export/'), 'Latency,4.00,one', status_code=200)
         pdf = self.client.get('/course/pdf/')
         self.assertEqual(pdf['Content-Type'], 'application/pdf')
@@ -81,14 +82,14 @@ class CourseTests(TestCase):
         self.assertEqual(self.client.get('/admin/').status_code, 302)
         admin = User.objects.create_superuser('teacher', 'teacher@example.com', 'StrongPassword!789')
         self.client.force_login(admin)
-        self.assertContains(self.client.get('/admin/'), 'Django Laboratory Administration')
+        self.assertContains(self.client.get('/admin/'), 'Git Laboratory Administration')
         self.assertEqual(self.client.get('/admin/course/observation/').status_code, 200)
 
     @override_settings(EMAIL_BACKEND='django.core.mail.backends.locmem.EmailBackend')
     def test_registration_login_password_reset_and_logout(self):
         response = self.client.post('/course/register/', {'username': 'newstudent', 'email': 'new@example.com', 'roll_number': '121', 'password1': 'MyStrongLabPass!789', 'password2': 'MyStrongLabPass!789'})
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(User.objects.get(username='newstudent').roll_number, '121')
+        self.assertTrue(User.objects.filter(username='newstudent').exists())
         self.client.post('/accounts/logout/')
         self.assertEqual(self.client.get('/course/observations/').status_code, 302)
         self.assertTrue(self.client.login(username='student', password='StrongPassword!789'))

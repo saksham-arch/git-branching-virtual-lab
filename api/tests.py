@@ -33,7 +33,7 @@ def test_errors_and_openapi(client):
     assert client.get('/observations/nope').status_code == 422
     assert client.put('/observations/999', json={'title': 'Missing', 'value': 1}).status_code == 404
     assert client.delete('/observations/999').status_code == 404
-    assert client.get('/openapi.json').json()['info']['title'] == 'Observation Laboratory API'
+    assert client.get('/openapi.json').json()['info']['title'] == 'Git Practice Record API'
     assert client.get('/docs').status_code == 200
     assert client.get('/health').json() == {'status': 'ok'}
 

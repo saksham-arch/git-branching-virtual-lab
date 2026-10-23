@@ -27,14 +27,14 @@ async def lifespan(app):
     yield
 
 
-app = FastAPI(title='Observation Laboratory API', version='1.0', lifespan=lifespan,
+app = FastAPI(title='Git Practice Record API', version='1.0', lifespan=lifespan,
               description='Local educational REST service. Separate data store from Django. No authentication: keep on loopback.')
 
 
 class ObservationInput(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, extra='forbid')
-    title: str = Field(min_length=3, max_length=100)
-    value: float = Field(ge=0, le=999999.99, allow_inf_nan=False)
+    title: str = Field(min_length=3, max_length=100, description='Git branch or practice attempt')
+    value: float = Field(ge=0, le=100, allow_inf_nan=False, description='Quiz score as a percentage')
     notes: str = Field(default='', max_length=2000)
 
 

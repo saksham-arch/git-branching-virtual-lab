@@ -6,7 +6,7 @@ from .models import Observation, User
 class RegistrationForm(UserCreationForm):
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ('username', 'email', 'roll_number')
+        fields = ('username', 'email')
 
     def clean_email(self):
         email = self.cleaned_data['email'].strip().lower()
@@ -21,8 +21,9 @@ class ObservationForm(forms.ModelForm):
     class Meta:
         model = Observation
         fields = ('title', 'value', 'notes')
-        widgets = {'title': forms.TextInput(attrs={'placeholder': 'Response time'}),
-                   'notes': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Describe the measurement'})}
+        labels = {'title': 'Practice branch / attempt', 'value': 'Quiz score (%)', 'notes': 'Git commands and resolution notes'}
+        widgets = {'title': forms.TextInput(attrs={'placeholder': 'feature/navbar'}),
+                   'notes': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Commands used, conflict resolution and verification'})}
 
     def clean_title(self):
         title = self.cleaned_data['title'].strip()
@@ -32,8 +33,8 @@ class ObservationForm(forms.ModelForm):
 
     def clean_value(self):
         value = self.cleaned_data['value']
-        if value < 0:
-            raise forms.ValidationError('The measurement must be zero or greater.')
+        if value < 0 or value > 100:
+            raise forms.ValidationError('Enter a quiz score between 0 and 100.')
         return value
 
 

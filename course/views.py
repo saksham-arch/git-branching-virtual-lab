@@ -7,35 +7,21 @@ from django.core.exceptions import ValidationError
 from django.http import FileResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic import TemplateView
-from .catalog import EXPERIMENTS
 from .forms import CSVForm, ObservationForm, RegistrationForm
 from .models import Observation
 from .services import csv_cell, import_csv
 
 
 def index(request):
-    return render(request, 'course/index.html', {'experiments': EXPERIMENTS})
+    return redirect('lab:experiment')
 
 
 def experiment(request, slug):
-    item = next((x for x in EXPERIMENTS if x['slug'] == slug), None)
-    if item is None:
-        from django.http import Http404
-        raise Http404('Experiment not found')
-    score = None
-    if request.method == 'POST':
-        answers = [request.POST.get(f'q{i}') for i in range(len(item['questions']))]
-        score = sum(a == str(q['answer']) for a, q in zip(answers, item['questions']))
-    return render(request, 'course/experiment.html', {'experiment': item, 'score': score})
+    return redirect('lab:experiment')
 
 
 class TemplateLab(TemplateView):
-    template_name = 'course/template_lab.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context.update(name=self.request.GET.get('name', 'Student')[:80], values=[4, 8, 12])
-        return context
+    template_name = 'course/react.html'
 
 
 def register(request):
@@ -43,7 +29,7 @@ def register(request):
     if request.method == 'POST' and form.is_valid():
         login(request, form.save())
         return redirect('course:observations')
-    return render(request, 'course/form.html', {'form': form, 'title': 'User registration'})
+    return render(request, 'course/form.html', {'form': form, 'title': 'Create a Git laboratory account'})
 
 
 @login_required
@@ -56,12 +42,12 @@ def observations(request):
         observation = form.save(commit=False)
         observation.owner = request.user
         observation.save()
-        messages.success(request, 'Observation saved.')
+        messages.success(request, 'Git practice record saved.')
         return redirect('course:observations')
     rows = list(Observation.objects.filter(owner=request.user))
     maximum = max((row.value for row in rows), default=1) or 1
     for row in rows:
-        row.width = float(row.value / maximum * 100)
+        row.width = float(row.value)
     return render(request, 'course/observations.html', {'form': form, 'rows': rows, 'csv_form': CSVForm()})
 
 
@@ -84,7 +70,7 @@ def upload_csv(request):
             return redirect('course:observations')
         except ValidationError as exc:
             form.add_error('file', exc)
-    return render(request, 'course/form.html', {'form': form, 'title': 'Import observations'})
+    return render(request, 'course/form.html', {'form': form, 'title': 'Import Git practice records'})
 
 
 @login_required
@@ -103,9 +89,9 @@ def export_pdf(request):
     from reportlab.pdfgen import canvas
     buffer = io.BytesIO()
     pdf = canvas.Canvas(buffer)
-    pdf.setTitle('Laboratory observations')
+    pdf.setTitle('Git practice records')
     y = 800
-    pdf.drawString(40, y, 'Django laboratory — observations')
+    pdf.drawString(40, y, 'Git branching, merging and conflict resolution — practice records')
     for row in Observation.objects.filter(owner=request.user):
         y -= 24
         if y < 50:
@@ -126,3 +112,18 @@ def instructor_export(request):
     for row in Observation.objects.select_related('owner'):
         writer.writerow([csv_cell(row.owner.username), csv_cell(row.title), row.value])
     return response
+
+
+@login_required
+def save_attempt(request):
+    """Persist a quiz result from the original Git experiment."""
+    from django.http import JsonResponse
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Use POST'}, status=405)
+    form = ObservationForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse({'errors': form.errors.get_json_data()}, status=400)
+    attempt = form.save(commit=False)
+    attempt.owner = request.user
+    attempt.save()
+    return JsonResponse({'id': attempt.pk, 'saved': True}, status=201)

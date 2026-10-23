@@ -8,7 +8,7 @@ import io
 import json
 from pathlib import Path
 
-path = Path(__file__).with_name('svu-kjsce-laboratory.ipynb')
+path = Path(__file__).with_name('git-laboratory.ipynb')
 notebook = json.loads(path.read_text())
 namespace = {'__name__': '__main__'}
 count = 0

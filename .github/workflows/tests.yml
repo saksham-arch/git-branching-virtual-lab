@@ -25,5 +25,5 @@ jobs:
           name: verified-laboratory-assets
           path: |
             frontend/dist/
-            notebooks/svu-kjsce-laboratory.ipynb
+            notebooks/git-laboratory.ipynb
       - run: docker build -t django-vlab .
