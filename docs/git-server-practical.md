@@ -38,7 +38,7 @@ Create an empty repository in your own account with the intended visibility. Do 
 ```bash
 git remote add hosted git@github.com:YOUR-ACCOUNT/YOUR-PRACTICE-REPOSITORY.git
 git push -u hosted main
-git push hosted observations
+git push hosted origin/observations:refs/heads/observations
 ```
 
 Open a pull request for the observations branch, inspect its diff, and merge it using your repository's review policy. Then `git fetch hosted` and inspect the remote-tracking history. Do not push the course's private student data or databases.
