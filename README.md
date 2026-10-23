@@ -67,6 +67,7 @@ Open <http://127.0.0.1:8001/docs>. The API supports POST, GET, PUT and DELETE `/
 
 - [Syllabus mapping and full experiment record](docs/syllabus-and-lab-record.md): all supplied units, CO mapping, module hours, theory, procedures, source pointers, viva answers and observation blanks.
 - [Runnable notebook](notebooks/svu-kjsce-laboratory.ipynb): representative assertions for each implemented area, using a disposable database.
+- [Git server and hosted remote practical](docs/git-server-practical.md).
 - [Sample CSV](docs/sample-observations.csv).
 - [Deployment guide](docs/deployment.md): container, Gunicorn, HTTPS/static/data configuration and release checks.
 

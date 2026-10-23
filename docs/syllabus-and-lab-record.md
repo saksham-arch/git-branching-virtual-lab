@@ -18,6 +18,8 @@ Reference: **SVU–KJSCE 2023_1.0 TY B Tech COMP BoS, pages 80–81**, transcrib
 | 5.1 | [REST endpoints and Pydantic validation](../course/catalog.py) | CO5 | api/main.py; persistent CRUD, path/query parameters, Pydantic, /docs |
 | 5.2 | [Endpoint tests and deployment](../course/catalog.py) | CO5 | course/tests.py, lab/tests.py, api/tests.py; Dockerfile and deployment guide |
 
+Unit 1.3 also includes a [two-clone, hosted GitHub and SSH server practical](git-server-practical.md).
+
 ## Experiment records
 Use the following record structure for each unit. Enter your own observed results; expected behavior is not a claim that a student performed an experiment.
 

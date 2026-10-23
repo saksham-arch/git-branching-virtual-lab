@@ -26,3 +26,4 @@ jobs:
           path: |
             frontend/dist/
             notebooks/svu-kjsce-laboratory.ipynb
+      - run: docker build -t django-vlab .
